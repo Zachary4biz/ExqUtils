@@ -23,7 +23,7 @@ class ExqUtils(object):
     
     @staticmethod
     def get_logger(log_file):
-        logger = logging.Logger(f"logger to {log_file}")
+        logger = logging.Logger("logger to {}".format(log_file))
         hdlr = logging.FileHandler(log_file)
         formatter = logging.Formatter('%(levelname)s %(lineno)s %(message)s')
         hdlr.setFormatter(formatter)
