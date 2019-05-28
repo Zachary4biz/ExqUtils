@@ -5,11 +5,13 @@
 #   1. python setup.py sdist build
 #   2. python setup.py bdist_wheel upload (deprecated)
 #   2. or twine upload dist/* (pip install twine)
+# install:
+# pip install zac-pyutils  --upgrade -i https://pypi.python.org/pypi
 from setuptools import setup, find_packages
 
 setup(
     name='zac_pyutils',
-    version='1.21',
+    version='1.51',
     description=(
         'collection of some useful functions'
     ),

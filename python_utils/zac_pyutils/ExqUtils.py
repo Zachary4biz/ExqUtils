@@ -43,4 +43,8 @@ def map_on_iter(iter_item, function, chunk_size=100):
             dq.append(function(target))
         else:
             break
-    return list(dq)
+    return flat(list(dq))
+
+
+def flat(inp_list):
+    return [item for sublist in inp_list for item in sublist]

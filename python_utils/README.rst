@@ -12,7 +12,7 @@ Usage
 -----
 .. code-block:: bash
 
-    $ pip install Tree
+    $ pip install zac-pyutils  --upgrade -i https://pypi.python.org/pypi
 
 .. code-block:: python
 
