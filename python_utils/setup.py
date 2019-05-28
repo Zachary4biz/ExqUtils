@@ -9,7 +9,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='ExqUtils',
-    version='1.0',
+    version='1.1',
     description=(
         'collection of some useful functions'
     ),
