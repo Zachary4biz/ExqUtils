@@ -1,0 +1,39 @@
+Metadata-Version: 1.2
+Name: ExqUtils
+Version: 1.0
+Summary: collection of some useful functions
+Home-page: empty now
+Author: zach
+Author-email: 2achx0121@gmail.com
+Maintainer: zach
+Maintainer-email: 2achx0121@gmail.com
+License: BSD License
+Description: Description
+        ============
+        some useful functions
+        
+        Usage
+        =======
+        load file as iter
+        ---------
+        .. code:: python
+            fileIter = ExqUtils.loadFileAsIter("./data/nlp/sample_data.txt")
+        
+        log with time
+        ---------
+        .. code:: python
+            xxxx
+        
+Platform: all
+Classifier: Development Status :: 4 - Beta
+Classifier: Operating System :: OS Independent
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: Implementation
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Topic :: Software Development :: Libraries
