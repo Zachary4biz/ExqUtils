@@ -16,5 +16,9 @@ Usage
 
 .. code-block:: python
 
-    import ExqUtils
-    fileIter = ExqUtils.load_file_as_iter("path/to/file")
+    from zac_pyutils import ExqUtils
+    # log to file
+    logger = ExqUtils.get_logger("tmp.log")
+    ExqUtils.log2file(message="new message",logger=logger)
+    # load file as iter
+    fileIter = ExqUtils.load_file_as_iter("./data/nlp/sample_data.txt")

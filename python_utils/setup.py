@@ -8,8 +8,8 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='ExqUtils',
-    version='1.11',
+    name='zac_pyutils',
+    version='1.21',
     description=(
         'collection of some useful functions'
     ),
@@ -19,7 +19,7 @@ setup(
     maintainer='zach',
     maintainer_email='2achx0121@gmail.com',
     license='BSD License',
-    packages=['ExqUtils'],
+    packages=['zac_pyutils'],
     platforms=["all"],
     url='https://github.com/Zachary4biz/ExqUtils',
     install_requires=[],
