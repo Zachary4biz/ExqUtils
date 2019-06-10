@@ -15,6 +15,11 @@ def load_file_as_iter(path):
             yield i
 
 
+def padding(tokens_inp, pad="__PAD__"):
+    pad_len = max([len(i) for i in tokens_inp])
+    return [(i+[pad]*pad_len)[:pad_len] for i in tokens_inp]
+
+
 def zprint(message):
     new_m = "|{}| {}".format(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), message)
     print(new_m)
