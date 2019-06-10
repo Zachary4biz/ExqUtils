@@ -5,11 +5,10 @@ if [[ ${input} = "y" ]]; then
     python setup.py sdist build
     read -r -p "更新到正式还是测试?  [formal/test]" target
     if [[ ${target} = "test" ]]; then
-    echo ">>> 更新到测试 || https://test.pypi.python.org | account: 2ach_test"
-    echo "check result at https://test.pypi.org/project/zac-pyutils/"
+    echo ">>> 更新到测试 || https://test.pypi.org/project/zac-pyutils/ | account: 2ach_test"
     twine upload --repository-url https://test.pypi.org/legacy/ dist/*
     else
-    echo ">>> 更新到正式 || https://pypi.python.org | account: 2ach"
+    echo ">>> 更新到正式 || https://pypi.org/project/zac-pyutils/ | account: 2ach"
     twine upload dist/*
     fi
 elif [[ ${input} = "n" ]]; then
