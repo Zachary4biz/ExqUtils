@@ -72,5 +72,5 @@ def timeit(func):
     return wraps
 
 
-def groupby(it, key):
+def groupby(it, key=lambda x:x):
     return itertools.groupby(sorted(it, key=key), key=key)
