@@ -11,7 +11,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='zac_pyutils',
-    version='1.54',
+    version='1.55',
     description=(
         'collection of some useful functions'
     ),
