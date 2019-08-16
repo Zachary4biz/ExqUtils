@@ -27,8 +27,8 @@ def padding_autoMax(tokens_list_inp, pad="__PAD__"):
     return [(tokens + [pad] * pad_len)[:pad_len] for tokens in tokens_list_inp]
 
 
-def zprint(message):
-    new_m = "|{}| {}".format(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), message)
+def zprint(*args):
+    new_m = "|{}| {}".format(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), " ".join(args))
     print(new_m)
 
 
