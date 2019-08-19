@@ -29,7 +29,7 @@ def padding_autoMax(tokens_list_inp, pad="__PAD__"):
 
 def zprint(*args):
     inp_str = " ".join([str(i) for i in args])
-    new_m = "|{}| {}".format(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), " ".join(inp_str))
+    new_m = "|{}| {}".format(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), inp_str)
     print(new_m)
 
 

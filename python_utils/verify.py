@@ -7,7 +7,7 @@ import itertools
 
 
 def test_zprint():
-    zprint("abc", "efd", "gear")
+    zprint("param1", "this a new params", "params2")
 
 
 def test_logger():
@@ -56,7 +56,7 @@ def test_time_it():
 if __name__ == '__main__':
     # 验证zprint
     test_zprint()
-
+    assert False
     # 验证logger
     test_logger()
 
