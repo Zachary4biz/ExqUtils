@@ -7,9 +7,11 @@ if [[ ${input} = "y" ]]; then
     if [[ ${target} = "test" ]]; then
     echo ">>> 更新到测试 || https://test.pypi.org/project/zac-pyutils/ | account: 2ach_test"
     twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+    echo "pip install zac-pyutils  --upgrade -i https://test.pypi.org/pypi"
     else
     echo ">>> 更新到正式 || https://pypi.org/project/zac-pyutils/ | account: 2ach"
     twine upload dist/*
+    echo "pip install zac-pyutils  --upgrade -i https://pypi.python.org/pypi"
     fi
 elif [[ ${input} = "n" ]]; then
     echo "exit..."
