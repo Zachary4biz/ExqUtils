@@ -1,3 +1,4 @@
+# encoding:utf-8
 from python_utils.zac_pyutils import ExqUtils
 from python_utils.zac_pyutils import ExqLog
 from python_utils.zac_pyutils.ExqUtils import zprint
