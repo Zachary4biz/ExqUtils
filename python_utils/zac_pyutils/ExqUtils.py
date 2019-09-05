@@ -3,8 +3,7 @@ import datetime
 import itertools
 import time
 from collections import deque
-from tqdm import tqdm as _tqdm
-from tqdm import tqdm_notebook as _tqdm_notebook
+
 
 INFO = logging.INFO
 WARN = logging.WARN
