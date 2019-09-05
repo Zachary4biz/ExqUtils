@@ -1,6 +1,7 @@
 # encoding:utf-8
 from python_utils.zac_pyutils import ExqUtils
 from python_utils.zac_pyutils import ExqLog
+from python_utils.zac_pyutils.Timeout import TimeoutThread,ThreadStopException
 from python_utils.zac_pyutils.ExqUtils import zprint
 import time
 import random
@@ -8,7 +9,7 @@ import itertools
 
 
 def test_zprint():
-    zprint("param1", "this a new params", "params2")
+    zprint("验证zprint支持输入多个字符串作为参数：自动空格连接", "参数2", "参数3")
 
 
 def test_logger():
@@ -45,19 +46,44 @@ def test_time_it():
     @ExqUtils.timeit
     def time_test(run_time, b):
         print("sleep for {} sec".format(run_time))
-        time.sleep(run_time)
-        print(b)
-        print("done.")
-        return "time_test's return"
+        for i in range(run_time):
+            time.sleep(1)
+            print(i)
+        print("input b is: {}".format(b))
+        return "time_test finished after runtime: {}".format(run_time)
 
     print(time_test(3, "someone"))
     print(time_test(5, "another"))
 
 
+def test_timeout():
+    def target_func(inp, timeout=5):
+        print("子线程预计执行 {}秒".format(timeout))
+        for i in range(timeout):
+            time.sleep(1)
+            print("子线程执行中：{}".format(i))
+        print("输入参数inp最后增加100")
+        return inp + 100
+
+    zprint("case1： 超时时间为8秒，子线程运行耗时3秒， 预计三秒后子线程结束、主线程不再被block")
+    t1 = TimeoutThread(target=target_func, args=(30,3), time_limit=8)
+    result = t1.start()
+    zprint("参数结果是 {}".format(result))
+
+    zprint("case1： 超时时间为3秒，子线程运行耗时8秒， 预计三秒后主线程不再block，子线程被强制结束")
+    t2 = TimeoutThread(target=target_func, args=(30, 8), time_limit=3)
+    res2 = t2.start()
+    zprint("参数结果是 {}".format(res2))
+    time.sleep(9)
+
+
 if __name__ == '__main__':
+    test_timeout()
+    assert False
+    # 验证 timeit
+    test_time_it()
     # 验证zprint
     test_zprint()
-    assert False
     # 验证logger
     test_logger()
 
