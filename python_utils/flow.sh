@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 read -r -p "确认setup.py已更改版本号... [y/n] " input
 if [[ ${input} = "y" ]]; then
     rm -rf dist
