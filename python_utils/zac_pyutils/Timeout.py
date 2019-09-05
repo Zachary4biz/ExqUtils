@@ -79,6 +79,6 @@ class TimeoutThread():
         """
         def wraps(*args, **kwargs):
             res = func(*args, **kwargs)
-            print("func运行完毕，结果将要放入resultQ队列中")
+            # print("func运行完毕，结果将要放入resultQ队列中")
             self.resultQ.put(res)
         return wraps
