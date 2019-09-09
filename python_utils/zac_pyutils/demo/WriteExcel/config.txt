@@ -10,3 +10,5 @@ engineer=Engineer:
 picsDir=tilePics
 # 最后输出的excel文件名
 outputFileName=result.xlsx
+# 单元格加粗边框的宽度
+border=1
