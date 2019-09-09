@@ -13,12 +13,18 @@ def get_image_as_bytes(img):
     img.save(img_bytes, format="PNG")
     return img_bytes
 
+########################
+# 从文件中获取各种配置
+########################
+with open("./config.txt", "r") as fr:
+    content = [i.strip().split("=") for i in fr.readlines()]
+    content = {i[0]: "=".join(i[1:]) for i in content}
 
 # fp = "/Users/zac/Downloads/tiles_demo.xlsx"
 book_fp = "./demo.xlsx"
 logo_left = Image.open("./logo_left.png")
 logo_right = Image.open("./logo_right.png")
-pic_dir = "/Users/zac/Downloads/tilePics"
+pic_dir = content['picsDir']
 pic_type = ['.png', '.jpg', '.jpeg']
 pic_fp_list = [os.path.join(pic_dir, i) for i in os.listdir(pic_dir) if os.path.splitext(i)[-1] in pic_type]
 
@@ -109,19 +115,15 @@ for i in range(0, 3 + 1):
 for i in range(0, 3 + 1):
     ws1.write(i, 17, "", right_border_format)
 # 连接处要改一下
-ws1.write(0,17,"",anchor_right_top_format) #右上角
-ws1.write(0,0,"",anchor_left_top_format)  #左上角
+ws1.write(0, 17, "", anchor_right_top_format)  # 右上角
+ws1.write(0, 0, "", anchor_left_top_format)  # 左上角
 ############
 # 插入标题等
 ############
-title = """
-CREC BISMARK JOINT VENTURE SDN BHD
-"""
-description = """
-CADANGAN MEMBINA 5 BLOCK (A,B,C,D & E) 38 TINGKAT 1099 UNIT RUMAH PANGSA KOS TINGGI DAN 23 UNIT KEDAI 4 TINGKAT  YANG MENGANDUNGI KEMUDAHAN TADIKA, DEWAN SERBAGUNA SURAU SERTA 4 TINGKAT PODIUM TEMPAT LETAK KERETA DAN REKREASI DENGAN 1 TINGKAT BASEMENT DI ATAS LOT 3901 HS (D) 61423, JALAN AMAN FASA 111(KG BEREMBANG), MUKIM ULU KLANG, DAERAH GOMBAK, SELANGOR DARUL EHSAN.
-"""
-item = """Item：Tiles installation"""
-engineer = """Engineer:"""
+title = content['title']
+description = content['description']
+item = content['item']
+engineer = content['engineer']
 
 ws1.merge_range('C1:N4', title.strip(), title_format)
 ws1.merge_range("A5:R9", description.strip(), desc_format)
