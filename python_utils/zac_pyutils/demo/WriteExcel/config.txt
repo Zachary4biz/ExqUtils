@@ -8,3 +8,5 @@ item=Item:Tiles installation
 engineer=Engineer:
 # 指定要添加的图片在哪个文件夹内
 picsDir=tilePics
+# 最后输出的excel文件名
+outputFileName=result.xlsx
