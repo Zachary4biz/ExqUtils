@@ -13,11 +13,12 @@ def get_image_as_bytes(img):
     img.save(img_bytes, format="PNG")
     return img_bytes
 
+
 ########################
 # 从文件中获取各种配置
 ########################
 with open("./config.txt", "r") as fr:
-    content = [i.strip().split("=") for i in fr.readlines()]
+    content = [i.strip().split("=") for i in fr.readlines() if not i.startswith("#")]
     content = {i[0]: "=".join(i[1:]) for i in content}
 
 # fp = "/Users/zac/Downloads/tiles_demo.xlsx"
