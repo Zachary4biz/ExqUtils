@@ -5,7 +5,7 @@ import xlsxwriter as xw
 import os
 from io import BytesIO
 from PIL import Image
-from tqdm.auto import tqdm
+# from  .auto import  
 import datetime
 
 
@@ -18,7 +18,7 @@ def get_image_as_bytes(img):
 ########################
 # 从文件中获取各种配置
 ########################
-with open("./config.txt", "r") as fr:
+with open("./config.txt", "r",encoding="utf-8") as fr:
     content = [i.strip().split("=") for i in fr.readlines() if not i.startswith("#")]
     content = {i[0]: "=".join(i[1:]) for i in content}
 
@@ -142,7 +142,8 @@ ws1.merge_range("N10:R11", date.strip(), generic_format)
 ################
 cnt = 0
 reservedRowsFrom = 0  # 最后一行后面要留出10个空行
-for fp in tqdm(pic_fp_list):
+# for fp in  (pic_fp_list):
+for fp in pic_fp_list: 
     f_name = os.path.splitext(os.path.basename(fp))[0]
     img = Image.open(fp)
     # 图片：宽7个cell，高 16 个cell
@@ -158,6 +159,7 @@ for fp in tqdm(pic_fp_list):
     # print("cnt-{} 文字坐标:".format(cnt), (first_row, first_col), (last_row, last_col))
     ws1.merge_range(first_row, first_col, last_row, last_col, data=f_name.strip(), cell_format=picName_format)
     reservedRowsFrom = last_row + 10
+    print("add picture_{}".format(cnt))
     cnt += 1
 # 75是6张图的情况
 reservedRowsFrom = 75 if reservedRowsFrom <= 75 else reservedRowsFrom
