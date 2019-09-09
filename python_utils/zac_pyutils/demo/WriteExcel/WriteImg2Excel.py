@@ -23,6 +23,7 @@ with open("./config.txt", "r",encoding="utf-8") as fr:
     content = {i[0]: "=".join(i[1:]) for i in content}
 
 # fp = "/Users/zac/Downloads/tiles_demo.xlsx"
+cell_border=int(content['border'])
 book_fp = "./{}".format(content['outputFileName'])
 logo_left = Image.open("./logo_left.png")
 logo_right = Image.open("./logo_right.png")
@@ -33,7 +34,7 @@ pic_fp_list = [os.path.join(pic_dir, i) for i in os.listdir(pic_dir) if os.path.
 wb = xw.Workbook(book_fp)
 ws1 = wb.add_worksheet("abc")
 cell_w, cell_h = ws1.default_col_pixels, ws1.default_row_pixels
-# print(cell_w, cell_h)
+#print(cell_w, cell_h)
 logo_left = logo_left.resize((int(cell_w*(0.6+0.6)), int(cell_h*(0.5+2+0.5))))
 logo_right = logo_right.resize((int(cell_w*(0.8+2+0.8)), int(cell_h*(0.5+2+0.5))))
 #########
@@ -48,10 +49,10 @@ title_format = wb.add_format({
     'align': 'center',  # 水平居中
     'valign': 'vcenter',  # 垂直居中
     'fg_color': '#D7E4BC',  # 颜色填充
-    'top': 2,
-    'bottom': 2,
-    'left': 2,
-    'right': 2,
+    'top': cell_border,
+    'bottom': cell_border,
+    'left': cell_border,
+    'right': cell_border,
 
 })
 desc_format = wb.add_format({
@@ -62,10 +63,10 @@ desc_format = wb.add_format({
     'align': 'left',  # 水平居中
     'valign': 'vcenter',  # 垂直居中
     'fg_color': '#A9A9A9',  # 颜色填充
-    'top': 2,  # 上边框宽度
-    'bottom': 2,  # 下
-    'left': 2,  # 左
-    'right': 2,  # 右
+    'top': cell_border,  # 上边框宽度
+    'bottom': cell_border,  # 下
+    'left': cell_border,  # 左
+    'right': cell_border,  # 右
 })
 generic_format = wb.add_format({
     'bold': True,  # 加粗字体
@@ -74,10 +75,10 @@ generic_format = wb.add_format({
     'text_wrap': True,  # 默认就是True？
     'align': 'left',
     'valign': 'vcenter',  # 垂直居中
-    'top': 2,  # 上边框宽度
-    'bottom': 2,  # 下
-    'left': 2,  # 左
-    'right': 2,  # 右
+    'top': cell_border,  # 上边框宽度
+    'bottom': cell_border,  # 下
+    'left': cell_border,  # 左
+    'right': cell_border,  # 右
 })
 picName_format = wb.add_format({
     'bold': True,  # 加粗字体
@@ -89,21 +90,21 @@ picName_format = wb.add_format({
 })
 
 top_border_format = wb.add_format({
-    'top': 2,  # 左
+    'top': cell_border,  # 左
 })
 bottom_border_format = wb.add_format({
-    'bottom': 2,  # 左
+    'bottom': cell_border,  # 左
 })
 left_border_format = wb.add_format({
-    'left': 2,  # 左
+    'left': cell_border,  # 左
 })
 right_border_format = wb.add_format({
-    'right': 2,  # 左
+    'right': cell_border,  # 左
 })
-anchor_right_top_format = wb.add_format({"right":2,"top":2})
-anchor_left_top_format = wb.add_format({"left":2,"top":2})
-anchor_right_bottom_format = wb.add_format({"right":2,"bottom":2})
-anchor_left_bottom_format = wb.add_format({"left":2,"bottom":2})
+anchor_right_top_format = wb.add_format({"right":cell_border,"top":cell_border})
+anchor_left_top_format = wb.add_format({"left":cell_border,"top":cell_border})
+anchor_right_bottom_format = wb.add_format({"right":cell_border,"bottom":cell_border})
+anchor_left_bottom_format = wb.add_format({"left":cell_border,"bottom":cell_border})
 ############
 # 插入logo
 ############
