@@ -5,6 +5,7 @@ import threading
 from threading import Thread, Event
 import time
 import sys
+import os
 from queue import Queue
 
 is_py2 = sys.version[0] == '2'
@@ -39,19 +40,25 @@ class TimeoutThread():
         t2 = TimeoutThread(target=target_func, args=(30, 8), time_limit=3)
         res2=t2.start()
     """
-    def __init__(self, target, args=(), time_limit=1, delta=0.05):
+    def __init__(self, target, args=(), time_limit=1, verbose=False):
         self.resultQ = Queue()
         _target = self._put_res_in_result_queue(target)
         # 用来运行目标函数的线程
         self.target_thread = _BasicStopThread(target=_target, args=args)
         self.target_thread.setDaemon(True)
         # 用来计时的线程
-        self.timing_thread = _BasicStopThread(target=self.timing, args=(time_limit,))
+        self.timing_thread = _BasicStopThread(target=self.timing, args=(time_limit, verbose, ))
         self.timing_thread.setDaemon(True)
 
-    def timing(self, timeout):
-        time.sleep(timeout + 0.1)  # 多等0.1秒再kill掉进程，让达到timeout那一瞬间时的print之类的程序能执行下去
-        # print("timing计时完毕，kill目标子线程..")
+    def timing(self, timeout, verbose=False):
+        pid = os.getpid()
+        for i in range(timeout):
+            time.sleep(1)
+            if verbose:
+                print("[pid]:{} [timing]:{}".format(pid, i))
+        time.sleep(0.1)  # 多等0.1秒再kill掉进程，让达到timeout那一瞬间时的print之类的程序能执行下去
+        if verbose:
+            print("[pid]: {} timing计时完毕，kill目标子线程..".format(pid))
         self.target_thread.stop()
 
     def start(self):
