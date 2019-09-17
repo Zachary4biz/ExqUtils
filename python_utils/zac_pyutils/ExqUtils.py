@@ -2,6 +2,7 @@ import logging
 import datetime
 import itertools
 import time
+import sys
 from collections import deque
 
 
@@ -9,6 +10,19 @@ INFO = logging.INFO
 WARN = logging.WARN
 ERROR = logging.ERROR
 DEBUG = logging.DEBUG
+
+
+def parse_argv(argv):
+    res_dict = {}
+    for idx, item in enumerate(argv):
+        if idx == 0:
+            continue  # .py文件名
+        # print(idx, item)
+        if item.startswith("--"):
+            res_dict.update({item.split("--")[1]: argv[idx+1]})
+            # print("update..")
+        # print(res_dict)
+    return res_dict
 
 
 def load_file_as_iter(path):

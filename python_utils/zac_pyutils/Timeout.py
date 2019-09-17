@@ -2,11 +2,11 @@
 # create-time: 2019-09-04 14:58
 # usage: -
 import threading
-from threading import Thread, Event
+import multiprocessing
 import time
 import sys
 import os
-from queue import Queue
+from queue import Queue,Empty
 
 is_py2 = sys.version[0] == '2'
 if is_py2:
@@ -88,4 +88,43 @@ class TimeoutThread():
             res = func(*args, **kwargs)
             # print("func运行完毕，结果将要放入resultQ队列中")
             self.resultQ.put(res)
+        return wraps
+
+class TimeoutProcess():
+    def __init__(self, target, args=(), time_limit=1, verbose=False, delta=0.5):
+        self.time_limit = time_limit
+        self.delta = delta
+        self.verbose = verbose
+
+        self.resultQ = multiprocessing.Queue()
+        _target = self._put_res_in_result_queue(target)
+        self.p = multiprocessing.Process(target=_target, args=args)
+        self.p.daemon = True
+
+    def start(self):
+        self.p.start()
+        b_time = time.time()
+        while True:
+            time.sleep(0.25)
+            if time.time()-b_time >= self.time_limit or not self.p.is_alive():
+                # 每0.25s检查一次，如果已经超时或者process已经结束
+                break
+        self.p.terminate()
+        try:
+            res_ = self.resultQ.get_nowait()  # ==> get(block=False)
+        except Empty as e:
+            res_ = None
+        return res_
+
+
+    def _put_res_in_result_queue(self, func):
+        """
+        # 给target方法做个wrap，把其返回结果放到self.resultQ里
+        :param func: 即target方法
+        :return:
+        """
+        def wraps(*args, **kwargs):
+            res = func(*args, **kwargs)
+            self.resultQ.put(res)
+            # print("func运行完毕，结果将要放入resultQ队列中")
         return wraps
