@@ -1,11 +1,14 @@
 # encoding:utf-8
 from python_utils.zac_pyutils import ExqUtils
+from python_utils.zac_pyutils import CVUtils
 from python_utils.zac_pyutils import ExqLog
 from python_utils.zac_pyutils.Timeout import TimeoutThread,TimeoutProcess
 from python_utils.zac_pyutils.ExqUtils import zprint
 import time
 import random
 import itertools
+import numpy as np
+import sys
 
 
 def test_zprint():
@@ -108,14 +111,25 @@ def test_timeout_process():
     res2 = t2.start()
     zprint("参数结果是 {}".format(res2))
 
+def test_cv_utils():
+    test_img = 'http://static.update.xprodev.com/xprodev/c00e90030c90fa3c9c34ceb1e5fd12c3.webp'
+    print(CVUtils.Load.image_by_pil_from(test_img))
+    print(np.array(CVUtils.Load.image_by_pil_from(test_img)))
+    img_arr = np.array(CVUtils.Load.image_by_pil_from(test_img))
+    import cv2
+    cv2.imshow("img", img_arr)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    pass
+
 
 if __name__ == '__main__':
     ExqUtils.parse_argv(['/Users/zac/server/mange_services_separate.py', '1', '2', '3', '4', '--sum', '3', '-delete', '3'])
 
+    test_cv_utils()
+    sys.exit(0)
     test_timeout_process()
-    assert False
     test_timeout()
-    assert False
     # 验证 timeit
     test_time_it()
     # 验证zprint
