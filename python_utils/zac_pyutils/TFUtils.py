@@ -73,3 +73,65 @@ def predict_ckpt(ckpt_fp, output_tensor_name, feed_dict_names):
         return output
 
 
+def print_all_tensors_from_ckpt(ckpt_fp):
+    from tensorflow.python.tools.inspect_checkpoint import print_tensors_in_checkpoint_file
+    print_tensors_in_checkpoint_file(ckpt_fp, tensor_name=None, all_tensors=False)
+
+
+def get_all_variable(target_graph=None):
+    if target_graph is None:
+        target_graph = tf.get_default_graph()
+    with target_graph.as_default():
+        return tf.global_variables()
+
+
+def print_all_variable(target_graph=None, name=True, value=True):
+    variables = get_all_variable(target_graph)
+    for v in variables:
+        to_print = ""
+        if name:
+            to_print += f"[name]: {v.name}"
+        if value:
+            to_print += f"[values]: {v}"
+        print(to_print)
+
+
+def get_all_operation(target_graph=None):
+    if target_graph is None:
+        target_graph = tf.get_default_graph()
+    return target_graph.get_operations()
+
+
+def print_all_operation(target_graph=None, name=True, type=True, value=True):
+    opts = get_all_operation(target_graph)
+    for v in opts:
+        to_print = ""
+        if name:
+            to_print += f"[name]: {v.name}"
+        if type:
+            to_print += f"[type]: {v.type}"
+        if value:
+            to_print += f"[values]: {v.values}"
+        print(to_print)
+
+
+def restore_ckpt(ckpt_fp, sess):
+    with sess.graph.as_default():
+        saver = tf.train.Saver()
+        saver.restore(sess, ckpt_fp)
+
+
+# todo: without test
+def restore_pb(pb_fp, target_graph=None):
+    if target_graph is None:
+        target_graph = tf.get_default_graph()
+    with target_graph.as_default():
+        output_graph_def = tf.GraphDef()
+        # 恢复图并得到数据
+        with tf.gfile.GFile(pb_fp, "rb") as f:
+            output_graph_def.ParseFromString(f.read())
+            tf.import_graph_def(output_graph_def)
+
+
+def img2tfrecord(img_dir, output_dir):
+    raise NotImplementedError
