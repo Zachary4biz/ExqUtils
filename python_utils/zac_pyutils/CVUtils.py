@@ -9,6 +9,7 @@ import importlib
 from PIL import Image
 import tensorflow as tf
 import tensorflow_hub as hub
+from sklearn.cluster import MiniBatchKMeans
 import logging
 logging.disable(logging.WARNING)
 
@@ -267,21 +268,25 @@ class Vectorize:
             def pre_format_pilImage(self, imgPIL):
                 return np.array(imgPIL.resize(self.IMAGE_SHAPE)) / 255.0
 
-            def imgPIL2vec(self, imgPIL, model=None):
-                imgArr = self.pre_format_pilImage(imgPIL)
-                return self.imgArr2vec(imgArr, model=model)
-
-            def imgPIL2vec_batch(self, imgPIL_batch, model=None):
-                imgArr_batch = np.array([self.pre_format_pilImage(imgPIL) for imgPIL in imgPIL_batch])
-                return self.imgArr2vec_batch(imgArr_batch, model=model)
-
-            def imgArr2vec(self, imgArr, model=None):
-                return self.imgArr2vec_batch(imgArr[np.newaxis, :], model=model)[0]
-
+            # fundamental function
             def imgArr2vec_batch(self, imgArr_batch, model=None):
                 if model is None:
                     model = self.get_default_model()
                 return model.predict(imgArr_batch)
+
+            # ->imgArr2vec->imgArr2vec_batch
+            def imgPIL2vec(self, imgPIL, model=None):
+                imgArr = self.pre_format_pilImage(imgPIL)
+                return self.imgArr2vec(imgArr, model=model)
+
+            # ->imgArr2vec_batch
+            def imgPIL2vec_batch(self, imgPIL_batch, model=None):
+                imgArr_batch = np.array([self.pre_format_pilImage(imgPIL) for imgPIL in imgPIL_batch])
+                return self.imgArr2vec_batch(imgArr_batch, model=model)
+
+            # ->imgArr2vec_batch
+            def imgArr2vec(self, imgArr, model=None):
+                return self.imgArr2vec_batch(imgArr[np.newaxis, :], model=model)[0]
 
         class InceptionV3(_BasePattern):
             url = "https://tfhub.dev/google/imagenet/inception_v3/feature_vector/4"
@@ -289,6 +294,10 @@ class Vectorize:
 
         class InceptionV1(_BasePattern):
             url = "https://tfhub.dev/google/imagenet/inception_v1/feature_vector/4"
+
+        class InceptionResNet(_BasePattern):
+            url = "https://tfhub.dev/google/imagenet/inception_resnet_v2/feature_vector/4"
+            IMAGE_SHAPE = (299, 299)
 
     class VectorFromHist:
         class ColorHist:
@@ -306,7 +315,6 @@ class Vectorize:
                 self.crop_shape = crop_shape
                 assert self.crop_shape == self.p_weight.shape, f"切割shape为 {crop_shape}, 权重shape为 {p_weight.shape}, 二者必须一致"
 
-
             def imgPIL_to_Vec(self, imgPIL):
                 """
                 hist的结果reshape，将3通道的各个bins都合到一起，整体向量实际是一个nested的结果，shape=[row*col,3*bins]
@@ -315,6 +323,9 @@ class Vectorize:
                 hist_features = StandardCV.get_hist(imgPIL, row=self.crop_shape[0], col=self.crop_shape[1], bins=self.bins,
                                                     weights=self.p_weight.flatten(), return_crops=False)
                 return hist_features.reshape(self.crop_shape[0]*self.crop_shape[1], -1)
+
+            def imgPIL2Vec(self, imgPIL):
+                return self.imgPIL_to_Vec(imgPIL)
 
         class LBPHist:
             def __init__(self, crop_shape=(4, 4), bins=None, p_weight=None, lbp_R=1, lbp_P=None):
@@ -339,6 +350,25 @@ class Vectorize:
                 hist_features = StandardCV.get_hist(imgLBP, row=self.crop_shape[0], col=self.crop_shape[1], bins=self.bins,
                                                     weights=self.p_weight.flatten(), return_crops=False)
                 return hist_features.reshape(self.crop_shape[0] * self.crop_shape[1], -1)
+
+            def imgPIL2Vec(self, imgPIL):
+                return self.imgPIL_to_Vec(imgPIL)
+
+    class VectorFromThemeColor:
+        class KMeansColor:
+            def __init__(self, cluster=5):
+                self.km = MiniBatchKMeans(n_clusters=cluster)
+
+            def imgPIL2Vec(self, imgPIL):
+                img_arr = np.array(imgPIL)
+                return self.imgArr2Vec(img_arr)
+
+            def imgArr2Vec(self, imgArr):
+                h, w, c = imgArr.shape
+                pixel = np.reshape(imgArr, (h*w, c))
+                self.km.fit(pixel)
+                return self.km.cluster_centers_
+
 
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
