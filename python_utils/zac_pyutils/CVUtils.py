@@ -416,7 +416,7 @@ class ImageGenerator:
         for i in range(0, len(fp_list), batch_size):
             img_cla_batch = [(self.process_img_pil(Image.open(fp).resize(image_shape)), cla) for fp, cla in fp_list[i:i + batch_size]]
             img_cla_batch = np.array(img_cla_batch)
-            yield img_cla_batch[:, 0], img_cla_batch[:, 1]
+            yield np.stack(img_cla_batch[:, 0]), img_cla_batch[:, 1]
 
 if __name__ == '__main__':
     # 验证切图是否正常 | plt绘图耗时会比较久
