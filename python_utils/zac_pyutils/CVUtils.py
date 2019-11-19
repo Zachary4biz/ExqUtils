@@ -11,6 +11,7 @@ import tensorflow as tf
 import tensorflow_hub as hub
 from sklearn.cluster import MiniBatchKMeans
 import logging
+import os
 logging.disable(logging.WARNING)
 
 def _get_module(name):
@@ -370,15 +371,54 @@ class Vectorize:
                 return self.km.cluster_centers_
 
 
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    test_url = "http://www.kedo.gov.cn/upload/resources/image/2017/04/24/150703.png"
-    test_url2 = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThwIfzyp-Rv5zYM0fwPmoM5k1f9eW3ETYuPcL8j2I0TuG0tdb5&s"
-    test_img = Load.image_by_pil_from(test_url).convert("YCbCr")
-    test_img2 = Load.image_by_pil_from(test_url2).convert("YCbCr")
-    test_img.show()
-    test_img2.show()
+class ImageGenerator:
+    allow_type = ['.jpg', '.png']
+    MODE_CATEGORICAL = 'categorical'
+    MODE_SPARSE = 'sparse'
 
+    def __init__(self, rescale=1 / 255.0):
+        self.rescale = rescale
+
+    def process_img_pil(self, imgPIL):
+        # 暂时只有rescale到0，1
+        return np.array(imgPIL) * self.rescale
+
+    def flow_from_directory(self, root_path, classes=None, image_shape=None, batch_size=10, class_mode=None, verbose=True):
+        if class_mode is None:
+            class_mode = self.MODE_CATEGORICAL
+        if image_shape is None:
+            image_shape = (224, 224)
+        if classes is None:
+            find_classes = [os.path.join(root_path, i) for i in os.listdir(root_path) if not i.startswith(".")]
+        else:
+            find_classes = [os.path.join(root_path, i) for i in os.listdir(root_path) if not i.startswith(".") and i in classes]
+
+        if class_mode == self.MODE_CATEGORICAL:
+            one_hot = [0] * len(find_classes)
+            class_dict = {}
+            for idx, class_ in enumerate(find_classes):
+                one_hot_ = one_hot.copy()
+                one_hot_[idx] = 1
+                class_dict.update({class_: one_hot_})
+        elif class_mode == self.MODE_SPARSE:
+            class_dict = {class_: idx for idx, class_ in enumerate(find_classes)}
+        else:
+            assert False, f"class_mode should be supplied (currently is '{class_mode}'')"
+
+        allow_files = [(class_dir, filename) for class_dir in find_classes for filename in os.listdir(class_dir) if
+                       os.path.splitext(filename)[-1] in self.allow_type]
+        fp_list = [(os.path.join(root_path, class_dir, filename), class_dict[class_dir]) for (class_dir, filename) in allow_files]
+        if verbose:
+            print(f"Found {len(fp_list)} images belonging to {len(class_dict)} classes")
+            for k, v in class_dict.items():
+                print(v, len([cla for fp, cla in fp_list if cla == v]), k)
+
+        for i in range(0, len(fp_list), batch_size):
+            img_cla_batch = [(self.process_img_pil(Image.open(fp).resize(image_shape)), cla) for fp, cla in fp_list[i:i + batch_size]]
+            img_cla_batch = np.array(img_cla_batch)
+            yield img_cla_batch[:, 0], img_cla_batch[:, 1]
+
+if __name__ == '__main__':
     # 验证切图是否正常 | plt绘图耗时会比较久
     def test_case0():
         print(">>> 验证切图是否正常")
@@ -386,7 +426,7 @@ if __name__ == '__main__':
         for i in range(cropsPIL_matrix.shape[0]):
             for j in range(cropsPIL_matrix.shape[1]):
                 plt.subplot(4, 4, i * 4 + (j + 1))
-                plt.imshow(cropsPIL_matrix[i,j])
+                plt.imshow(cropsPIL_matrix[i, j])
 
         print(">>> 展示切割后各部分的直方图")
         hist, crops = StandardCV.get_hist(test_img, row=4, col=4, return_crops=True)
@@ -411,6 +451,26 @@ if __name__ == '__main__':
         print(f"    向量一: {vec1.shape} {type(vec1)}\n", vec1)
         print(f"    向量二: {vec2.shape} {type(vec2)}\n", vec2)
 
+    # 验证图片generator是否正常
+    def test_case3():
+        root_path = "/Users/zac/Downloads/Image_samples"
+        g = ImageGenerator()
+        img_generator = g.flow_from_directory(root_path, classes=['cg_background', 'landscape'])
+        for image_batch, label_batch in img_generator:
+            print("Image batch shape: ", image_batch.shape)
+            print("Label batch shape: ", label_batch.shape)
+            break
+
+    import matplotlib.pyplot as plt
+
+    test_url = "http://www.kedo.gov.cn/upload/resources/image/2017/04/24/150703.png"
+    test_url2 = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThwIfzyp-Rv5zYM0fwPmoM5k1f9eW3ETYuPcL8j2I0TuG0tdb5&s"
+    test_img = Load.image_by_pil_from(test_url).convert("YCbCr")
+    test_img2 = Load.image_by_pil_from(test_url2).convert("YCbCr")
+    test_img.show()
+    test_img2.show()
+
     # test_case0()
-    test_case1()
-    test_case2()
+    # test_case1()
+    # test_case2()
+    test_case3()
