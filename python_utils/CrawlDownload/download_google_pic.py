@@ -19,6 +19,7 @@ def download_google_pic(driver,target,hold_cnt,max_load_cnt=None,all_use_screens
     target_asfp=target.replace(' ','_')
     save_dir=os.path.join(save_dir,target_asfp)
     os.makedirs(save_dir,exist_ok=True)
+    print(f"download to {save_dir}")
     driver.get("https://www.google.com/imghp")
     inp=driver.find_element_by_xpath(".//input[@name='q' and @type='text']")
     inp.send_keys(target)
