@@ -284,6 +284,16 @@ def cut_bysec(fp,from_sec,to_sec,width=None,height=None,output_fp=None):
             break
     return output_fp
 
+# 使用ffmpeg改变码率
+def compress(fp,rate=480,w=854,h=480):
+    fp_out = os.path.splitext(fp)[0]+"_comp"+os.path.splitext(fp)[1]
+    cmd=f"ffmpeg -i {fp} -b:v {rate}k -s {w}x{h} {fp_out}"
+    print(f"use cmd: {cmd}\ncompress saved to: {fp_out}")
+    status, output = subprocess.getstatusoutput(cmd)
+    if status!=0:
+        assert False,">>> cmd ERROR: \n"+output
+    return fp_out
+
 # 根据秒获取某一帧
 def get_frame_bysec(fp,sec):
     cap = cv2.VideoCapture(fp)
@@ -367,6 +377,7 @@ def concat(fp_list, output_fp=None):
             print(">>>[ERROR] failed. output as:")
             print(output)
             break
+    return output_fp
 
 def multi_copy(fp,copy=3,output_fp=None):
     if output_fp is None:
@@ -380,8 +391,7 @@ def multi_copy(fp,copy=3,output_fp=None):
         assert False,"must less than 4"
 
 # 获取所有的clips并concat到一起
-def get_clips(fp,clips,vertical=False):
-    w,h=(406,720) if vertical else (854,480)
+def get_clips(fp,clips,w=854,h=480):
     print(f">>> use size {w}x{h}")
     fp = escape(fp)
     clip_fp_list=[]
@@ -392,7 +402,7 @@ def get_clips(fp,clips,vertical=False):
         print(begin, end)
         clip_fp_list.append(cut_bysec(fp,begin,end,width=w,height=h))
     print(">>> 将要合并:\n    "+'\n    '.join(clip_fp_list))
-    concat(clip_fp_list)
+    return concat(clip_fp_list)
 
 # 缩放
 # ROI裁剪
@@ -406,19 +416,22 @@ if __name__ == "__main__":
     # merge_PIP2(fp_list,row=1,col=3,pad2longest=True,auto_size=True)
     # _ = [multi_copy(fp) for fp in fp_list]
 
-    # fp=""
-    # cut_bysec(fp,15,3*60+49,width=406,height=720)
-    # cut_bysec(fp,15,3*60+49,width=854,height=480)
-    # exit(0)
+    fp=""
+    w,h=(854,480)
+    # w,h=(406,720)
+    fp=cut_bysec(fp,0*60+45,3*60,width=w,height=h)
+    compress(fp,w=w,h=h)
+    exit(0)
     # cut_bysec(fp,begin,end,width=854,height=480)
     # pic = get_frame_bysec(fp,1)
     # play_bysec(fp,433,460)
 
     fp=""
-    clip=[
-        "55-1:57","12:48-13:18"
-    ]
-    get_clips(fp,clip)
+    w,h=(406,720)
+    w,h=(854,480)
+    clip=[]
+    fp=get_clips(fp,clip,w=w,h=h)
+    compress(fp,w=w,h=h)
 
 
 
