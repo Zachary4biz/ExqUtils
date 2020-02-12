@@ -4,6 +4,7 @@ import itertools
 import time
 import sys
 from collections import deque
+import matplotlib.pyplot as plt
 
 
 INFO = logging.INFO
@@ -88,3 +89,16 @@ def timeit(func):
 
 def groupby(it, key=lambda x:x):
     return itertools.groupby(sorted(it, key=key), key=key)
+
+
+def pltshow(imgArr_list,info_list=None,figsize=(10,10),info_fontsize=8):
+    row = int(len(imgArr_list)**0.5)
+    col = len(imgArr_list)/row
+    col = int(col) if int(col)==col else int(col)+1
+    fig, axes = plt.subplots(row,col, figsize=figsize)
+    for idx,img in enumerate(imgArr_list):
+        ax=axes.flatten()[idx]
+        ax.imshow(img)
+        _ = ax.set_axis_off()
+        info="" if info_list is None else info_list[idx]
+        _ = ax.set_title(info,size=info_fontsize)
