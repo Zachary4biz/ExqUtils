@@ -13,7 +13,8 @@ from selenium.webdriver.common.by import By
 
 def download_google_pic(driver,target,hold_cnt,max_load_cnt=None,all_use_screenshot=False,save_dir=None):
     if max_load_cnt is None:
-        max_load_cnt=hold_cnt+3
+        max_load_cnt=hold_cnt//100 +3
+        print(f"use max_load_cnt as {max_load_cnt}")
     if save_dir is None:
         save_dir="/Users/zac/Downloads/tmp"
     target_asfp=target.replace(' ','_')
@@ -80,20 +81,13 @@ if __name__ == "__main__":
     hold_cnt=600
     # download_google_pic(driver,target,hold_cnt)
     t0=['blowjob','pussy close porn','dick close porn','breast close porn']
-    # for t in t0:
-        # print("\n"*2+"*"*10+t+"*"*10+"\n"*2)
-        # download_google_pic(driver,t,hold_cnt=400,max_load_cnt=7)
-    # download_google_pic(driver,'soft core porn',hold_cnt=800,max_load_cnt=7)
     t1=["porn pic","indian porn","brunette porn",'indian nude selfie','indian nude girl','naked guy porn','indian naked guy']
     t2=['woman bodybuilder','lady photo pose','indian guy full body','indian people','selfie','couple','indian love']
-    # for t in t2:
-    #     print("\n"*2+"*"*10+t+"*"*10+"\n"*2)
-    #     download_google_pic(driver,t,hold_cnt=600,max_load_cnt=7)
-
     t3=['indian models','male bodybuilder','indian celebrity','normal guys']
-    for t in t3:
+    t4=['vagina closeup']
+    for t in t4:
         print("\n"*2+"*"*10+t+"*"*10+"\n"*2)
-        download_google_pic(driver,t,hold_cnt=400,max_load_cnt=7)
-    # download_google_pic(driver,'naked statue',hold_cnt=500,max_load_cnt=7)
+        download_google_pic(driver,t,hold_cnt=300)
+    # download_google_pic(driver,'naked statue',hold_cnt=500)
     driver.close()
 
