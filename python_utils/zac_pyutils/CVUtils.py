@@ -7,8 +7,6 @@ import numpy as np
 from io import BytesIO
 import importlib
 from PIL import Image
-import tensorflow as tf
-import tensorflow_hub as hub
 from sklearn.cluster import MiniBatchKMeans
 import logging
 import os
@@ -254,6 +252,8 @@ class StandardCV:
 
 class Vectorize:
     class VectorFromNN:
+        import tensorflow as tf
+        import tensorflow_hub as hub
         class _BasePattern:
             default_model = None
             url = None
