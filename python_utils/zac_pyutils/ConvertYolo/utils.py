@@ -5,6 +5,7 @@ import tensorflow as tf
 import cv2
 import sys
 import os
+from PIL import Image
 
 YOLOV3_LAYER_LIST = [
     'yolo_darknet',
@@ -77,17 +78,19 @@ def load_darknet_weights(model, weights_file, tiny=False):
     wf.close()
 
 
-def draw_outputs(img, outputs, class_names):
+def draw_outputs(img_inp, outputs, class_names):
     boxes, objectness, classes, nums = outputs
-    boxes, objectness, classes, nums = boxes[0], objectness[0], classes[0], nums[0]
-    wh = np.flip(img.shape[0:2])
+    wh = np.flip(img_inp.shape[0:2])
+    pixel_max_v=255 if np.max(img_inp)>1 else 1
+    img = img_inp.copy()
     for i in range(nums):
         x1y1 = tuple((np.array(boxes[i][0:2]) * wh).astype(np.int32))
         x2y2 = tuple((np.array(boxes[i][2:4]) * wh).astype(np.int32))
-        img = cv2.rectangle(img, x1y1, x2y2, (255, 0, 0), 2)
-        img = cv2.putText(img, '{} {:.4f}'.format(
+        img = cv2.rectangle(img, x1y1, x2y2, (pixel_max_v, 0, 0), 2)
+        # cv2.putText 参数: 图片，添加的文字，左上角坐标，字体，字体大小，颜色，字体粗细
+        img = cv2.putText(img, '{}={:.4f}'.format(
             class_names[int(classes[i])], objectness[i]),
-            x1y1, cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 255), 2)
+            x1y1, cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, pixel_max_v), 2)
     return img
 
 
@@ -113,16 +116,46 @@ def freeze_all(model, frozen=True):
             freeze_all(l, frozen)
 
 
+def trace_model_call(model):
+    from tensorflow.python.framework import tensor_spec
+    from tensorflow.python.eager import def_function
+    from tensorflow.python.util import nest
+    
+    inputs = model.inputs
+    input_names = model.input_names
+
+    input_signature = []
+    for input_tensor, input_name in zip(inputs, input_names):
+        input_signature.append(tensor_spec.TensorSpec(
+            shape=input_tensor.shape, dtype=input_tensor.dtype,
+            name=input_name))
+
+    @def_function.function(input_signature=input_signature, autograph=False)
+    def _wrapped_model(*args):
+        inputs = args[0] if len(input_signature) == 1 else list(args)
+        outputs_list = nest.flatten(model(inputs=inputs))
+        output_names = model.output_names
+        return {"{}_{}".format(kv[0], i): kv[1] for i, kv in enumerate(
+            zip(output_names, outputs_list))}
+
+    return _wrapped_model
+
+
 if __name__ == "__main__":
     try:
         opt=sys.argv[1]
-        classes=int(sys.argv[2])
-        darknet_weight_fp=sys.argv[3]
     except Exception as e:
-        print("USAGE: python utils.py convert <classes> <darknet_weight_fp>")
+        print("USAGE: python utils.py {convert,detect}")
         sys.exit(0)
     
     if opt=="convert":
+        try:
+            classes=int(sys.argv[2])
+            darknet_weight_fp=sys.argv[3]
+        except:
+            print("USAGE: python utils.py convert <classes> <darknet_weight_fp>")
+            sys.exit(0)
+
         pb_fp=os.path.splitext(darknet_weight_fp)[0]+"_pb"
         print(f"opt:{opt}\nclasses:{classes}\ndarknet_weight_fp:{darknet_weight_fp}\npb_fp:{pb_fp}")
 
@@ -137,6 +170,31 @@ if __name__ == "__main__":
         print("available.")
 
         yolo.save_weights(os.path.splitext(darknet_weight_fp)[0]+"_ckpt")
-        print(".pb currently not available.")
-        tf.keras.models.save_model(yolo, pb_fp)
+        tf.saved_model.save(M, pb_fp, signatures=trace_model_call(M))
 
+    if opt=="detect":
+        try:
+            class_names_fp=sys.argv[2]
+            tf_weight_fp=sys.argv[3]
+            img_fp=sys.argv[4]
+        except:
+            print("USAGE: python utils.py detect <classes_names_fp> <tf_weight_fp> <img_fp>")
+            sys.exit(0)
+        with open(class_names_fp,"r") as fr:
+            class_names=[i.strip() for i in fr.readlines()]
+            classes=len(class_names)
+        print(f"class_names: {','.join(class_names)}")    
+
+        # init yolo
+        from _Yolo_v3 import YoloV3
+        yolo = YoloV3(classes=classes)
+        # load_darknet_weights(yolo,darknet_weight_fp)
+        yolo.load_weights(tf_weight_fp)
+
+        # detect img
+        img = np.array(Image.open(img_fp).resize((416,416)))
+        img = np.expand_dims(img,axis=0)
+        boxes, scores, classes, nums = yolo(img)
+        img = draw_outputs(img, (boxes[0], scores[0], classes[0], nums[0]), class_names)
+        cv2.imwrite("./utils_detected.jpg", img)
+        pass
