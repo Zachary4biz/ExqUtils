@@ -17,7 +17,7 @@ def parse_argv(argv):
     res_dict = {}
     for idx, item in enumerate(argv):
         if idx == 0:
-            continue  # .py文件名
+            continue  # .py file name
         # print(idx, item)
         if item.startswith("--"):
             res_dict.update({item.split("--")[1]: argv[idx+1]})

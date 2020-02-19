@@ -11,7 +11,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='zac_pyutils',
-    version='1.70.4',
+    version='1.70.53',
     description=(
         'collection of some useful functions'
     ),
@@ -21,7 +21,9 @@ setup(
     maintainer='zach',
     maintainer_email='2achx0121@gmail.com',
     license='BSD License',
-    packages=['zac_pyutils'],
+    packages=['zac_pyutils','zac_pyutils/ConvertYolo'],
+    scripts=[], # ['zac_pyutils/ConvertYolo/convert_yolo.py'], 避免补全的时候麻烦
+    entry_points={'console_scripts': ['convert_yolo=zac_pyutils.ConvertYolo.convert_yolo:main']},
     platforms=["all"],
     url='https://github.com/Zachary4biz/ExqUtils',
     install_requires=[],
