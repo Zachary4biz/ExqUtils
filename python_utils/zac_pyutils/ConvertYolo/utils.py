@@ -142,6 +142,7 @@ def trace_model_call(model):
 
 
 if __name__ == "__main__":
+    print(sys.argv)
     try:
         opt=sys.argv[1]
     except Exception as e:
@@ -153,7 +154,8 @@ if __name__ == "__main__":
             classes=int(sys.argv[2])
             darknet_weight_fp=sys.argv[3]
         except:
-            print("USAGE: python utils.py convert <classes> <darknet_weight_fp>")
+            print("USAGE: python utils.py convert <classes_num> <darknet_weight_fp>")
+            print("Example: python utils.py convert 4 ./custom_w/yolo_w_final.weights")
             sys.exit(0)
 
         pb_fp=os.path.splitext(darknet_weight_fp)[0]+"_pb"
@@ -168,11 +170,10 @@ if __name__ == "__main__":
         img = np.random.random((1, 320, 320, 3)).astype(np.float32)
         output = yolo(img)
         print("available.")
-
-        yolo.save_weights(os.path.splitext(darknet_weight_fp)[0]+"_ckpt")
-        tf.saved_model.save(M, pb_fp, signatures=trace_model_call(M))
-
-    if opt=="detect":
+        
+        # yolo.save_weights(os.path.splitext(darknet_weight_fp)[0]+"_ckpt")
+        tf.saved_model.save(yolo, pb_fp, signatures=trace_model_call(yolo))
+    elif opt=="detect":
         try:
             class_names_fp=sys.argv[2]
             tf_weight_fp=sys.argv[3]
@@ -198,3 +199,5 @@ if __name__ == "__main__":
         img = draw_outputs(img, (boxes[0], scores[0], classes[0], nums[0]), class_names)
         cv2.imwrite("./utils_detected.jpg", img)
         pass
+    else:
+        print("USAGE: python utils.py {convert,detect}")
