@@ -92,6 +92,8 @@ def groupby(it, key=lambda x:x):
 
 
 def pltshow(imgArr_list,info_list=None,figsize=(10,10),info_fontsize=8):
+    if len(imgArr_list)==1:
+        print("currently not support single img in pltshow")
     row = int(len(imgArr_list)**0.5)
     col = len(imgArr_list)/row
     col = int(col) if int(col)==col else int(col)+1
