@@ -115,8 +115,8 @@ def freeze_all(model, frozen=True):
         for l in model.layers:
             freeze_all(l, frozen)
 
-
-def trace_model_call(model):
+@DeprecationWarning("用官方的就行")
+def trace_model_call_deprecated(model):
     from tensorflow.python.framework import tensor_spec
     from tensorflow.python.eager import def_function
     from tensorflow.python.util import nest
@@ -170,7 +170,8 @@ if __name__ == "__main__":
         print("available.")
 
         yolo.save_weights(os.path.splitext(darknet_weight_fp)[0]+"_ckpt")
-        tf.saved_model.save(M, pb_fp, signatures=trace_model_call(M))
+        from tensorflow.python.keras.saving.saving_utils import trace_model_call
+        tf.saved_model.save(yolo, pb_fp, signatures=trace_model_call(yolo))
 
     if opt=="detect":
         try:
