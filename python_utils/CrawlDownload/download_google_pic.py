@@ -74,7 +74,7 @@ if __name__ == "__main__":
     # 初始化并访问网页
     options = webdriver.ChromeOptions()
     # options.add_experimental_option('prefs', {'profile.default_content_setting_values': {'images': 2}})
-    options.add_argument('headless')
+    # options.add_argument('headless')
     driver = webdriver.Chrome(chrome_options=options)
 
     target="porn pic"
@@ -84,10 +84,10 @@ if __name__ == "__main__":
     t1=["porn pic","indian porn","brunette porn",'indian nude selfie','indian nude girl','naked guy porn','indian naked guy']
     t2=['woman bodybuilder','lady photo pose','indian guy full body','indian people','selfie','couple','indian love']
     t3=['indian models','male bodybuilder','indian celebrity','normal guys']
-    t4=['vagina closeup']
+    t4=['big ass porn']
     for t in t4:
         print("\n"*2+"*"*10+t+"*"*10+"\n"*2)
-        download_google_pic(driver,t,hold_cnt=300)
+        download_google_pic(driver,t,hold_cnt=400)
     # download_google_pic(driver,'naked statue',hold_cnt=500)
     driver.close()
 
