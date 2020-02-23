@@ -172,6 +172,7 @@ if __name__ == "__main__":
         print("available.")
         
         # yolo.save_weights(os.path.splitext(darknet_weight_fp)[0]+"_ckpt")
+        from tensorflow.python.keras.saving.saving_utils import trace_model_call
         tf.saved_model.save(yolo, pb_fp, signatures=trace_model_call(yolo))
     elif opt=="detect":
         try:

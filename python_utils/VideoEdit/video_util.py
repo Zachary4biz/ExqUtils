@@ -417,14 +417,12 @@ if __name__ == "__main__":
     # _ = [multi_copy(fp) for fp in fp_list]
 
     fp=""
+    fp=escape(fp)
     w,h=(854,480)
     # w,h=(406,720)
-    fp=cut_bysec(fp,0*60+45,3*60,width=w,height=h)
-    compress(fp,w=w,h=h)
+    fp=cut_bysec(fp,0*60,1*60+43.5,width=w,height=h)
+    # compress(fp,w=w,h=h)
     exit(0)
-    # cut_bysec(fp,begin,end,width=854,height=480)
-    # pic = get_frame_bysec(fp,1)
-    # play_bysec(fp,433,460)
 
     fp=""
     w,h=(406,720)
