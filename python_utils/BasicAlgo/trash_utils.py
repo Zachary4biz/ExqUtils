@@ -65,6 +65,12 @@ def test_random_choice(data=None):
     print("随机抽三个random_choice的结果如下:")
     _ = [print(i) for i in random_choice(m,3)]
 
+
+def heap_sort(data_inp):
+    def heapify(arr,n,i):
+        pass
+    pass
+
 if __name__ == "__main__":
     test_random_choice()
 

@@ -7,20 +7,24 @@
 
 # O(n),利用快排的partition思想,在各个part中迭代查找
 def find_topK(data_inp,k):
-    b, data = data_inp[0], data_inp[1:]
+    data = data_inp.copy()
+    b = data.pop()
     left, right = [],[]
-    for i in range(len(data)):
-        # 这里不能写<=b，如果出现重复的b，
-        if data[i] < b:
-            left.append(data[i])
+    for i in data:
+        if i < b:
+            left.append(i)
         else:
-            right.append(data[i])
-    if len(left) == k-1:
-        return left+[b]
-    elif len(left) < k-1:
+            right.append(i)
+    if len(right) == k:
+        return right
+    elif len(right) == k-1:
         return [b]+right
-    todo
-
+    elif len(right) < k-1:
+        return find_topK(left,k-1-len(right))+[b]+right
+    elif len(right) > k:
+        return find_topK(right,k)
+    else:
+        assert False, "unexcepted err"
 
 # 堆的思路，其实就是维护了一个额外的「存储对象」，每次保存k个元素
 # 先取原数组的前k个，然后对这个「存储对象」排序（堆做下沉/上浮）
@@ -28,16 +32,10 @@ def find_topK(data_inp,k):
 # 假设用数组替代堆，用sorted替代下沉/上浮
 
 
-nums_s=[0]*11
-for i in range(0,len(nums_s),2):
-    print(i)
-for idx,i in enumerate(nums_s):
-    print(idx,i)
-    if idx == len(nums_s)-1:
-        print(idx,i,"lasst")
-    else:
-        if i != nums_s[idx+1]:
-            print(idx,nums_s[idx+1],i,"not e")
-        else:
-            pass
-                
+
+data = [1,95,274,4,23,19,33,22,44]
+print(">>> ori data:")
+print(data)
+print(sorted(data))
+print(">>> topK")
+print(find_topK(data,4))
