@@ -21,7 +21,7 @@ def quick_sort(data_inp):
 def test_quick_sort(data=None):
     if data is None:
         data=[8,4,3,2,9,1,12,14]
-    print(">>> [test-case] 测试快速排序")
+    print("\n\n>>> [test-case] 测试快速排序")
     print("原数组如下:")
     print("length:",len(data), "data:", data)
     print("排序后的数组如下:")
@@ -57,7 +57,7 @@ def random_choice(data_inp,k):
 def test_random_choice(data=None):
     if data is None:
         data = [2,3,4,5,6,7,8,9]
-    print(">>> [test-case] 测试从数组中随机选择整个数组长度的元素（数组随机重排）")
+    print("\n\n>>> [test-case] 测试从数组中随机选择整个数组长度的元素（数组随机重排）")
     print("原数组如下:")
     print("length:",len(data), "data:", data)
     m=[random_choice(data,len(data)) for i in range(1000)]
@@ -66,15 +66,57 @@ def test_random_choice(data=None):
     _ = [print(i) for i in random_choice(m,3)]
 
 
-def heap_sort(data_inp):
-    def heapify(arr,n,i):
-        pass
-    pass
+def heapify(arr, n, i): 
+    largest = i  
+    # 表示第i个元素的左右节点，比如0的左右节点是(1,2)，1的左右节点是(3,4)，2的左右节点是(5,6)
+    l = 2 * i + 1     # left = 2*i + 1 
+    r = 2 * i + 2     # right = 2*i + 2 
+    # 如果当前元素arr[i]小于arr[l]就把largest的索引替换为l; l<n 保证索引不会溢出
+    if l < n and arr[largest] < arr[l]: 
+        largest = l 
+    # 同理，如果此时的arr[largest]还小于arr[r]，更新largest索引为r
+    if r < n and arr[largest] < arr[r]: 
+        largest = r 
+  
+    if largest != i: 
+        print(f"  [heapify]将交换 arr[{i}]={arr[i]} 和 arr[{largest}]={arr[largest]}")
+        arr[i],arr[largest] = arr[largest],arr[i]  # 交换
+        heapify(arr, n, largest) 
+  
+def heapSort(arr): 
+    n = len(arr) 
+  
+    print("初始数组为: ", arr)
+    # Build a maxheap. 
+    for i in range(n, -1, -1): 
+        # 从数组[n-1]开始，做这个倒着查的原因就类似于从二叉树的底部叶子节点开始查一样
+        heapify(arr, n, i) 
+    print("原始数组heapify: ", arr)
+
+
+    # 一个个交换元素
+    for i in range(n-1, 0, -1): 
+        # 把根节点放到数组“最后” | 这个“最后”随i变化，从n-1减小到1
+        print("  当前数组为: ",arr)
+        arr[i], arr[0] = arr[0], arr[i]   # 交换
+        print(f"  根节点(arr[0])放到\"最后\"(arr[i]): ", arr)
+        # 拿掉根节点后的剩余元素在进行heapify(所以要设定此时heapify只用前i个元素来做)
+        heapify(arr, i, 0) 
+  
+def test_heapSort():
+    print ("\n\n>>> [testcase] 堆排序") 
+    arr = [ 9,8,7,19,2,1,30,12, 11, 13, 5, 6, 7] 
+    heapSort(arr)
+    print(arr)
 
 if __name__ == "__main__":
     test_random_choice()
 
     test_quick_sort()
+
+    test_heapSort()
+
+    
 
 
 
