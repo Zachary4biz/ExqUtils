@@ -409,6 +409,10 @@ def get_clips(fp,clips,w=854,h=480):
 
 
 if __name__ == "__main__":
+    fp=""
+    w,h=854,480
+    compress(fp,w=w,h=h)
+    exit(0)
     # fp_list=[
     # ]
     # concat(fp_list)
