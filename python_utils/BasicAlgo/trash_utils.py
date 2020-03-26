@@ -95,7 +95,6 @@ def heapSort(arr):
         heapify(arr, n, i) 
     print("heapify结果: ", arr)
 
-
     # 一个个交换元素
     for i in range(n-1, 0, -1): 
         # 把根节点放到数组“最后” | 这个“最后”随i变化，从n-1减小到1
@@ -143,6 +142,24 @@ def test_binary_insert():
     print("原数组: ",items)
     print("插入元素: ",insert_item)
     print(binary_insert(items,insert_item))
+
+
+def binary_search(arr,target,start=None,end=None):
+    if start is None:
+        start = 0
+    if end is None:
+        end = len(arr) - 1
+    mid = (start+end)//2
+    if arr[mid] == target:
+        return mid
+    if start >= end:
+        return None
+    if arr[mid] < target:
+        return binary_search(arr,target,start=mid+1,end=end)
+    elif target < arr[mid]:
+        return binary_search(arr,target,start=start,end=mid-1)
+    else:
+        assert False
 
 if __name__ == "__main__":
     test_random_choice()
