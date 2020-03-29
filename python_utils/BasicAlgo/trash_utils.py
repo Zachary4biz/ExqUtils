@@ -161,6 +161,57 @@ def binary_search(arr,target,start=None,end=None):
     else:
         assert False
 
+def sqrt_custom(inp,l=None,r=None):
+    if l is None:
+        l = 0
+    if r is None:
+        r = inp
+    t = (l+r) / 2
+    print(t,t*t)
+    if max(t*t - inp,inp-t*t) < 0.1:
+        return t
+    elif t*t < inp:
+        return sqrt_custom(inp,l=t,r=r)
+    elif t*t > inp:
+        return sqrt_custom(inp,l=l,r=t)
+
+def test_sqrt_custom():
+    print(">>> [test case]测试二分法求根")
+    print(sqrt_custom(5))
+
+
+# 空间复杂度从log(n)优化到O(1)
+def quick_sort_Nspace(arr,start_inp,end_inp):
+    if start_inp < 0 or start_inp >= end_inp:
+        return
+    start = start_inp+1
+    end = end_inp
+    b = start_inp
+
+    while start < end:
+        if arr[start] <= arr[b]:
+            start += 1
+        else:
+            if arr[b] <= arr[end]:
+                end -= 1
+            else:
+                arr[start],arr[end] = arr[end],arr[start]
+    if start != end:
+        print(arr)
+        assert False,f"unexpected [start]:{start} [end]:{end}"
+    swap_idx = start if arr[b] > arr[start] else start - 1
+    arr[b],arr[swap_idx] = arr[swap_idx],arr[b]
+    quick_sort_Nspace(arr,start_inp=b,end_inp=swap_idx-1)
+    quick_sort_Nspace(arr,start_inp=swap_idx+1,end_inp=end_inp)
+
+def test_quick_sort_Nspace():
+    print(">>> [test case]测试空间复杂度为O(1)的快排")
+    arr = [2,4,1,3,6,9,7,8]
+    print("输入数组为: ",arr)
+    quick_sort_Nspace(arr,start_inp=0,end_inp=len(arr)-1)
+    print("原地排序后: ",arr)
+
+
 if __name__ == "__main__":
     test_random_choice()
 
@@ -169,6 +220,11 @@ if __name__ == "__main__":
     test_heapSort()
 
     test_binary_insert()
+
+    test_sqrt_custom()
+
+    test_quick_sort_Nspace()
+    
     
 
 
