@@ -293,7 +293,7 @@ def compress(fp,rate=480,w=854,h=480):
     if status!=0:
         assert False,">>> cmd ERROR: \n"+output
     return fp_out
-p(y)(p(x|y) / p(x)) = p(y|x)
+
 # 根据秒获取某一帧
 def get_frame_bysec(fp,sec):
     cap = cv2.VideoCapture(fp)
@@ -409,10 +409,10 @@ def get_clips(fp,clips,w=854,h=480):
 
 
 if __name__ == "__main__":
-    fp="/Users/zac/Downloads/RDR1811-A+.mov"
-    w,h=854,480
-    compress(fp,w=w,h=h)
-    exit(0)
+    # fp=""
+    # w,h=854,480
+    # compress(fp,w=w,h=h)
+    # exit(0)
     # fp_list=[
     # ]
     # concat(fp_list)

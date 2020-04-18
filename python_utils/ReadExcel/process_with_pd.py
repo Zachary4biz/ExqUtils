@@ -73,10 +73,25 @@ resDF.to_excel("indep_2011.xlsx")
 
 
 
-fp="/Users/zac/Downloads/潘书尚-回归数据-final.xlsx"
-df1=pd.read_excel(fp,sheet_name="2011年变量比值")
-df2=pd.read_excel(fp,sheet_name="同构值十二五")        
-for idx,row in df1.iterrows():
-    city1=row['city1']
-    city2=row['city2']
-    row['同构值']=df2.query(f"(city1=='{city1}' and city2=='{city2}') or (city1=='{city2}' and city2=='{city1}')")
+fp = "/Users/zac/Downloads/50连线城市.xlsx"
+df1=pd.read_excel(fp,sheet_name="所属省份")
+df2=pd.read_excel(fp,sheet_name="所有地级市平均距离")
+all_province = df1['prov']
+res=[]
+for k,g in df1.groupby("prov"):
+    # print("at province: ",k)
+    dist_list=[]
+    for c1 in g['c']:
+        for c2 in g['c']:
+            dist=df2.query(f"(city1=='{c1}' and city2=='{c2}') or (city1=='{c2}' and city2=='{c1}')")['dist_km'].iloc[0]
+            # print(c1,c2,dist)
+            dist_list.append(dist)
+    dist_avg = sum(dist_list)/len(dist_list)
+    res.append((k,dist_avg))
+
+print("省内城市距离均值:")
+print("\n".join([k+", "+str(round(v,1)) for k,v in res]))
+print("各省的「省内•城市距离均值」的均值:")
+am = [v for k,v in res if v != 0]
+print(sum(am)/len(am))
+
