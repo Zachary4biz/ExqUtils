@@ -404,6 +404,11 @@ def get_clips(fp,clips,w=854,h=480):
     print(">>> 将要合并:\n    "+'\n    '.join(clip_fp_list))
     return concat(clip_fp_list)
 
+def rmtrash(fp):
+    cmd="rmtrash "+fp.replace(' ','\ ')
+    print(">>> 将执行指令: "+cmd)
+    status, output = subprocess.getstatusoutput(cmd)
+
 # 缩放
 # ROI裁剪
 
@@ -413,18 +418,21 @@ if __name__ == "__main__":
     # w,h=854,480
     # compress(fp,w=w,h=h)
     # exit(0)
-    # fp_list=[
-    # ]
+    # fp_list=[]
+    # w,h=(406,720)
+    # for fp in fp_list:
+    #     cut_bysec(fp,0,-3,width=w,height=h)
     # concat(fp_list)
     # exit(0)
     # merge_PIP2(fp_list,row=1,col=3,pad2longest=True,auto_size=True)
     # _ = [multi_copy(fp) for fp in fp_list]
 
-    fp=""
-    fp=escape(fp)
+    fp_=""
+    fp_=escape(fp_)
     w,h=(854,480)
     # w,h=(406,720)
-    fp=cut_bysec(fp,0*60,1*60+43.5,width=w,height=h)
+    fp=cut_bysec(fp_,5*60+19,-1,width=w,height=h)
+    # rmtrash(fp_)
     # compress(fp,w=w,h=h)
     exit(0)
 
